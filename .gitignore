@@ -1,11 +1,21 @@
-# Linux / editor artifacts
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
-.DS_Store
 
-# Optional local evidence that may contain sensitive data
+# Temporary and log files
+*.tmp
+*.temp
 *.log
+*.bak
 
-# Keep repository placeholders
-!.gitkeep
+# Python/cache artifacts (if later used)
+__pycache__/
+*.py[cod]
+
+# Keep evidence and submission templates tracked.
+# Do not ignore evidence/screenshots or submission outputs.

@@ -1,68 +1,70 @@
-# Linux Command Line Practical Task
+# Suricata Setup and Custom ICMP Alert Rule Lab
 
-## Project Description
+A GitHub-ready, learning-focused workflow for configuring Suricata on Kali Linux, updating its rules, adding a custom ICMP detection rule, validating the configuration, generating authorized test traffic, and checking alert logs.
 
-This repository is a GitHub-ready workflow for the **Linux Command Line Practical Task**. It is based strictly on the uploaded activity document and is designed to guide the practical work in Kali Linux as the newly created user `student01`.
+> **Status:** This repository is a practical workflow/template. It does not contain fabricated results or screenshots. Perform the lab on your own system and save your real evidence in `evidence/`.
 
 ## Objective
 
-Demonstrate understanding of basic Linux commands by completing the required tasks as a newly created user in Kali Linux.
-
-## Lab Requirements
-
-The activity requires you to:
-
-- Create and switch to a new user named `student01`.
-- Set the user's password and add the user to the sudo group if required.
-- Confirm the active user with `whoami`.
-- Create the required `project` directory structure.
-- Create and edit the required files.
-- Copy, move, rename, and delete files as specified.
-- Apply the required permissions with `chmod`.
-- Create the `backup` directory and copy the contents of `docs` and `scripts` into it.
-- Verify the final structure and permissions using `tree project` and `ls -la`.
-- Optionally record command history in `commands_used.txt`.
-
-## Technologies / Tools
-
-- Kali Linux
-- Linux terminal
-- `useradd`
-- `passwd`
-- `usermod`
-- `su`
-- `whoami`
-- `mkdir`
-- `cd`
-- `echo`
-- `ls`
-- `nano`
-- `cp`
-- `mv`
-- `chmod`
-- `rm`
-- `tree`
-- `history`
-- shell redirection (`>`)
-
-## Prerequisites
-
-- Kali Linux terminal access.
-- Permission to create a local user and, where required, use `sudo`.
-- Ability to enter the password created for `student01`.
-
-## Important Source Requirements
-
-The task explicitly requires the username `student01`, directory `project`, subdirectories `docs`, `scripts`, and `bin`, and the named files used throughout the activity. These names should not be changed during the practical.
-
-## Step-by-Step Workflow
-
-See [`workflow/workflow.md`](workflow/workflow.md) for the complete procedure, including commands, expected results, verification, and evidence to capture.
-
-## Project Structure
+Set up and verify Suricata so it can monitor the selected network interface and alert on ICMP traffic using this custom rule:
 
 ```text
-linux-command-line-practical-task/
+alert icmp any any -> any any (msg:"SURICATA ICMP TEST ALERT"; sid:1000001; rev:1;)
+```
+
+## Lab requirements from the supplied guide
+
+- Check that Suricata is installed; install it if it is missing.
+- Identify the active network interface and its IP/network.
+- Back up `/etc/suricata/suricata.yaml`.
+- Review/configure `HOME_NET`, `af-packet`, `default-rule-path`, and `rule-files`.
+- Run `sudo suricata-update`.
+- Create `/etc/suricata/rules/local.rules` with the custom ICMP test rule.
+- Reference `local.rules` in `/etc/suricata/suricata.yaml`.
+- Test the configuration and look for SID `1000001` or the alert message.
+- Restart/check the Suricata service, inspect logs, generate ICMP traffic, and verify alerts in `fast.log` and optionally `eve.json`.
+
+## Tools and environment
+
+- Kali Linux (physical or virtual machine)
+- Terminal and `sudo` access
+- Suricata and `suricata-update`
+- A second machine/VM or another authorized lab host to ping
+- Optional: `jq` for readable JSON output
+
+Commands in this repository are examples for the documented Kali/Linux environment. Interface names, IP ranges, package versions, and output differ by system.
+
+## Prerequisites and safety
+
+1. Use a Kali system where you have administrator permission.
+2. Identify the real interface with `ip route` and `ip addr`; **do not assume it is `eth0`**.
+3. Determine your actual local network before changing `HOME_NET`. Do not blindly replace existing network ranges if your environment uses multiple networks.
+4. Generate traffic only to a host/network you own or are explicitly authorized to test.
+5. Back up the configuration before editing it.
+6. Do not start/restart the service until the configuration test passes.
+
+## Quick start
+
+Follow the full instructions in [`workflow/workflow.md`](workflow/workflow.md). The high-level order is:
+
+1. Check Suricata: `suricata --build-info` or `suricata -V`
+2. Identify interface/network: `ip addr` and `ip route`
+3. Back up and edit `/etc/suricata/suricata.yaml`
+4. Update rules: `sudo suricata-update`
+5. Create `/etc/suricata/rules/local.rules` using the rule above
+6. Add the local rule path under `rule-files`
+7. Test: `sudo suricata -T -c /etc/suricata/suricata.yaml`
+8. Check that the rule exists/loads
+9. Restart/check Suricata
+10. Ping an authorized lab host and inspect `/var/log/suricata/fast.log`
+11. Optionally inspect `/var/log/suricata/eve.json`
+
+See [`commands/commands.sh`](commands/commands.sh) for a commented command reference. It is a **manual runbook**, not a script to execute as one batch, because it includes interactive editing and system-specific values.
+
+## Project structure
+
+```text
+suricata-custom-icmp-rule-lab/
 ├── README.md
 ├── .gitignore
 ├── docs/
@@ -74,95 +76,65 @@ linux-command-line-practical-task/
 ├── commands/
 │   ├── README.md
 │   └── commands.sh
+├── scripts/
+│   ├── README.md
+│   └── verify-lab.sh
 ├── evidence/
 │   ├── README.md
-│   ├── screenshots/
-│   │   └── .gitkeep
-│   └── terminal-output/
-│       └── .gitkeep
+│   ├── screenshots/.gitkeep
+│   └── terminal-output/.gitkeep
 └── submission/
     ├── README.md
     ├── command-history.txt
     └── final-output.txt
 ```
 
-## Expected Final Results
+## Expected results
 
-Inside `/home/student01/project`, the required final locations are:
+Your real system should, if configured correctly:
 
-```text
-project/
-├── backup/
-│   ├── docs/
-│   │   └── report.txt
-│   └── scripts/
-│       ├── install.sh
-│       └── report.txt
-├── bin/
-│   └── classified.txt
-├── docs/
-│   └── report.txt
-└── scripts/
-    ├── install.sh
-    └── report.txt
-```
+- Report the installed Suricata version.
+- Show the selected interface in `ip route`/`ip addr`.
+- Have a backup at `/etc/suricata/suricata.yaml.backup`.
+- Have `suricata.rules` and `local.rules` configured for loading.
+- Pass `sudo suricata -T -c /etc/suricata/suricata.yaml`.
+- Show the Suricata service running when the system uses the service-based setup.
+- Generate a `SURICATA ICMP TEST ALERT` entry with SID `1000001` after matching ICMP traffic reaches the monitored interface.
 
-The `admin_notes.txt` file should have been deleted during cleanup. The hidden `.secret.txt` should have been moved and renamed to `bin/classified.txt`.
+These are expected outcomes, not claims that the lab has already been completed. If traffic does not reach the monitored interface or the service uses a different run mode, an alert may not appear.
 
-The exact permission checks should be performed with `ls -la` as required by the task.
+## Evidence
 
-## Evidence Requirements
-
-The source task does not prescribe specific screenshot filenames or a specific number of screenshots. Capture clear evidence of the required milestones, especially:
-
-1. `whoami` confirming `student01`.
-2. Directory and file creation.
-3. `report.txt` after the nano edit.
-4. File movement/copying.
-5. Permission changes.
-6. Final `tree project` output.
-7. Final `ls -la` output showing permissions and locations.
-
-Store screenshots in `evidence/screenshots/` and terminal captures/output in `evidence/terminal-output/`.
-
-## Submission Requirements
-
-The source task does not specify a separate submission format beyond completing the practical and performing the final checks. This repository therefore provides a submission area without inventing additional submission requirements.
+Capture real screenshots and/or terminal output at the checkpoints described in [`evidence/README.md`](evidence/README.md). Do not add screenshots that imply success unless your own output demonstrates it.
 
 ## Troubleshooting
 
-### `tree` is not installed
+- **`suricata: command not found`:** install with `sudo apt update` and `sudo apt install suricata -y`, then verify with `suricata -V`.
+- **Configuration test fails:** do not restart Suricata yet. Read the error, check YAML indentation, interface name, rule paths, and rule syntax; correct the issue and rerun the test.
+- **Custom SID/message not found:** confirm the rule exists in `/etc/suricata/rules/local.rules` and that the full path is listed under `rule-files`.
+- **Service does not start:** inspect `sudo systemctl status suricata` and `sudo tail -n 80 /var/log/suricata/suricata.log`.
+- **No ICMP alert:** verify the monitored interface is correct, the ping target is authorized and reachable, and the traffic actually traverses the monitored interface. Check `fast.log` and `eve.json`.
+- **`jq` is missing:** install it with `sudo apt install jq -y`, or inspect `eve.json` without it.
 
-The task specifically instructs:
+## Final verification checklist
 
-```bash
-sudo apt install tree
-```
+- [ ] Suricata version checked
+- [ ] Correct interface and local network identified
+- [ ] Original configuration backed up
+- [ ] `HOME_NET` reviewed/configured for the actual lab network
+- [ ] `af-packet` interface matches the actual monitored interface
+- [ ] Rule path and rule files checked
+- [ ] Rules updated
+- [ ] `local.rules` created with SID `1000001`
+- [ ] Local rule referenced in `suricata.yaml`
+- [ ] Configuration test passes
+- [ ] Rule presence/load checked
+- [ ] Service status and Suricata log checked
+- [ ] Authorized ICMP traffic generated
+- [ ] Alert checked in `fast.log`; `eve.json` checked if available
+- [ ] Screenshots/output saved
+- [ ] Submission files completed with actual results
 
-Then run:
+## Source
 
-```bash
-tree project
-```
-
-### `sudo` is unavailable for `student01`
-
-Follow the task's instruction to add `student01` to the sudo group **if required**. Perform account administration from an account that has the necessary privileges.
-
-### `su student01` does not work
-
-Confirm that the user was created and that a password was set. Then retry the switch.
-
-### Permission verification
-
-Use:
-
-```bash
-ls -la
-```
-
-inside the relevant directories and compare the displayed permissions with the permissions requested in the task.
-
-## Safety / Permission Notes
-
-User creation, group membership changes, package installation, and other administrative actions require appropriate privileges. Only perform these commands on your own Kali Linux lab environment or a system where you have explicit authorization.
+Prepared from the uploaded **“Siricata Setup” / Suricata Documentation** guide (16 pages). Where the guide leaves system-specific values open, this workflow uses placeholders and instructs you to discover the real values rather than inventing them.

@@ -1,0 +1,6 @@
+# Actual command history
+
+Replace this template with commands you actually executed during the lab.
+Do not paste commands you did not run and do not include passwords.
+
+[PASTE YOUR ACTUAL COMMAND HISTORY HERE]

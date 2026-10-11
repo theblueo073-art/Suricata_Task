@@ -1,0 +1,17 @@
+# Final Lab Results
+
+Complete this file after performing the lab. Record observed facts only.
+
+- Suricata version: [RECORD ACTUAL OUTPUT]
+- Monitored interface: [RECORD ACTUAL INTERFACE]
+- HOME_NET configured: [RECORD ACTUAL VALUE; omit sensitive details if necessary]
+- Configuration test result: [PASTE/SUMMARIZE ACTUAL RESULT]
+- Custom rule file verification: [RECORD ACTUAL RESULT]
+- Service status: [RECORD ACTUAL STATUS]
+- ICMP test target (authorized lab host): [RECORD ACTUAL TARGET]
+- Alert found in fast.log: [YES / NO / NOT TESTED; include actual evidence]
+- Alert found in eve.json: [YES / NO / NOT TESTED]
+- Problems encountered and fixes: [RECORD ACTUAL DETAILS]
+- Evidence filenames: [LIST ACTUAL FILES]
+
+[PASTE RELEVANT ACTUAL FINAL OUTPUT HERE]
