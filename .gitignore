@@ -1,0 +1,11 @@
+# Linux / editor artifacts
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Optional local evidence that may contain sensitive data
+*.log
+
+# Keep repository placeholders
+!.gitkeep
